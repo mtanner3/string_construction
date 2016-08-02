@@ -1,39 +1,34 @@
 #!/usr/bin/python
 
-DEBUG = False
-
 num_strings = int(raw_input().strip())
 for string_num in range(num_strings):
     string = raw_input().strip()
-    if DEBUG: print "=" * 30
-    if DEBUG: print "string %d : %s" % (string_num, string)
     charlist = list(string)
-    newstring = ""
-    tempstring = ""
+    newstring = charlist.pop(0)
+    tempstring = None
     cost = 0
     for charnum, char in enumerate(charlist):
-        if DEBUG: print "--- step %d ---" % charnum
-        if DEBUG: print "char: %s" % char
-        if DEBUG: print "newstring: %s" % newstring
-        if DEBUG: print "tempstring: %s" % tempstring
-        teststring = "%s%s" % (tempstring, char)
-        if DEBUG: print "-"
-        if DEBUG: print "testing %s" % teststring
-        if teststring in newstring:
-            tempstring = teststring
-            if DEBUG: print "tempstring becomes: %s" % tempstring
-            continue
-        else:
-            newstring += tempstring
-            if char not in newstring:
-                if DEBUG: print "cost just increased to %d"  % cost
+        if tempstring is not None:
+            startpos = 0
+            done = False
+            while done is False:
+                location = newstring.find(tempstring, startpos)
+                end_plus_one = location + len(tempstring)
+                if location > -1 and end_plus_one < len(newstring):
+                    if newstring[end_plus_one] == char:
+                        tempstring += char
+                    else:
+                        startpos = location
+                else:
+                    done = True
+        else: 
+            if char in newstring:
+                tempstring = char
+            else:
+                if tempstring is not None:
+                    newstring += tempstring
+                newstring += char
+                tempstring = None
                 cost += 1
-            newstring += char
-            tempstring = ""
-            if DEBUG: print "tempstring resets"
-            if DEBUG: print "newstring becomes: %s" % newstring
-            
-    if DEBUG: print "final cost answer: ",
     print "%d" % cost
-            
 
